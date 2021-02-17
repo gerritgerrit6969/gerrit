@@ -1,0 +1,88 @@
+<?php
+
+namespace App\Controller;
+
+use App\Entity\Medicijn;
+use App\Form\Medicijn1Type;
+use App\Repository\MedicijnRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+/**
+ * @Route("/medicijn")
+ */
+class MedicijnController extends AbstractController
+{
+    /**
+     * @Route("/", name="medicijn_index")
+     */
+    public function index(MedicijnRepository $medicijnRepository): Response
+    {
+        $medicijnen=$medicijnenRepository->findAll();
+        return $this->render('apotheek/medicijn.html.twig', ['medicijnen'=> $medicijnen]);
+    }
+
+    /**
+     * @Route("/new", name="medicijn_new")
+     */
+    public function new(Request $request): Response
+    {
+        $medicijn = new Medicijn();
+        $form = $this->createForm(Medicijn1Type::class, $medicijn);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($medicijn);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('medicijn_index');
+        }
+
+        return $this->render('medicijn/new.html.twig', [
+            'medicijn' => $medicijn,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/update/{id}", name="medicijn_update")
+     */
+    public function update(Request $request, Medicijn $medicijn): Response
+    {
+        $form = $this->createForm(Medicijn1Type::class, $medicijn);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+            return $this->redirectToRoute('medicijn_index');
+        }
+
+        return $this->render('medicijn/edit.html.twig', [
+            'medicijn' => $medicijn,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/remove{id}", name="medicijn_delete")
+     */
+    public function delete(Medicijn $medicijn): Response
+    {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->remove($medicijn);
+            $entityManager->flush();
+        return $this->redirectToRoute('medicijn');
+    }
+}
+
+<td><a href="{{ path('medicijnRemove', {'id': medicijn.id}) }}"><span class="fas fa-trash-alt" style="color:red"/></a></td>
+<a href="{{ path('medicijnAdd') }}"><span class="fas fa-plus" style="font-size: 2em;color:red"/></a>
+
+{{ form_start(form) }}
+{{ form_widget(form) }}
+<button type="submit" class="btn btn-primary">Voegtoe!</button>
+{{ form_end(form) }}
+    
