@@ -18,10 +18,10 @@ class MedicijnController extends AbstractController
     /**
      * @Route("/", name="medicijn_index")
      */
-    public function index(MedicijnRepository $medicijnRepository): Response
+    public function index(MedicijnRepository $MedicijnRepository): Response
     {
-        $medicijnen=$medicijnenRepository->findAll();
-        return $this->render('apotheek/medicijn.html.twig', ['medicijnen'=> $medicijnen]);
+        $medicijnen = $MedicijnRepository->findAll();
+        return $this->render('medicijn/medicijn.html.twig', ['medicijnen'=> $medicijnen]);
     }
 
     /**
@@ -71,14 +71,15 @@ class MedicijnController extends AbstractController
      */
     public function delete(Medicijn $medicijn): Response
     {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($medicijn);
-            $entityManager->flush();
-        return $this->redirectToRoute('medicijn');
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($medicijn);
+        $entityManager->flush();
+        return $this->redirectToRoute('medicijn_index');
     }
 }
 
-<td><a href="{{ path('medicijnRemove', {'id': medicijn.id}) }}"><span class="fas fa-trash-alt" style="color:red"/></a></td>
+<td><a href="{{ path('medicijn_delete', {'id': medicijn.id}) }}"><span class="fas fa-trash-alt" style="color:red"/></a></td>
 <a href="{{ path('medicijnAdd') }}"><span class="fas fa-plus" style="font-size: 2em;color:red"/></a>
 
 {{ form_start(form) }}
