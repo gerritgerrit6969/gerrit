@@ -92,3 +92,8 @@ class MedicijnController extends AbstractController
 #bootstrap
 <link href="assets/css/bootstrap.min.css" rel="stylesheet">
 <script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
+
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+    {{  form_widget(form) }}
+    <button type="submit" class="btn btn-primary">Bijwerken</button>
+    {{ form_end(form) }}
